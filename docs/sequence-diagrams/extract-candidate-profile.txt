@@ -1,0 +1,15 @@
+title Extract Candidate Profile from Resume/CV
+
+Applicant->Web UI: Upload resume file in PDF
+Web UI->Controller: Send API with PDF file to extract data
+Controller->Service: Send PDF file to extract service
+Service->Service: Read file and get extracted data 
+note right of Service
+PyResParser
+end note
+Service->Database: Save extracted data
+Database->Service: Save successfully
+Service->File Storage: Store resume file
+File Storage->Service: Save successfully
+Service->Web UI: Response success with extracted data
+Web UI->Applicant:Display extracted data
