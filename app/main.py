@@ -1,17 +1,10 @@
-from pyresparser import ResumeParser
-
 from fastapi import FastAPI
+from routers import resume_router
 
 app = FastAPI()
 
-@app.get("/resume/extract")
-def read_root():
-    return read_doc()
+app.include_router(resume_router)
 
-def read_doc():
-    data = ResumeParser("C:/Users/ASUS/OneDrive/Desktop/senior-project/resume-extraction/src/resume-sample.pdf").get_extracted_data()
-    return data
-
-
-
-
+@app.get("/")
+async def root():
+    return {"message": "Resume Extraction Service is Healthy!"}
