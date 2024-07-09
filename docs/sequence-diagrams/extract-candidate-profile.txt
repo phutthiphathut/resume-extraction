@@ -11,5 +11,5 @@ Service->Database: Save extracted data
 Database->Service: Save successfully
 Service->File Storage: Store resume file
 File Storage->Service: Save successfully
-Service->Web UI: Response success with extracted data
-Web UI->Applicant:Display extracted data
+Service->Web UI: Response successfully status code
+Web UI->Applicant:Display successfully message
