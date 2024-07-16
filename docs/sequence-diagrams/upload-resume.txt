@@ -1,6 +1,6 @@
-title Extract Candidate Profile from Resume/CV
+title Upload Resume
 
-Applicant->Web UI: Upload resume file in PDF
+Job Seeker->Web UI: Upload resume file in PDF
 Web UI->Controller: Send API with PDF file to extract data
 Controller->Service: Send PDF file to extract service
 Service->Service: Read file and get extracted data 
@@ -12,4 +12,4 @@ Database->Service: Save successfully
 Service->File Storage: Store resume file
 File Storage->Service: Save successfully
 Service->Web UI: Response successfully status code
-Web UI->Applicant:Display successfully message
+Web UI->Job Seeker: Display successfully message
