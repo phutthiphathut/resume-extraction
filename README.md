@@ -3,7 +3,7 @@
 ## Table of Contents
 1. [Installation](#installation)
 2. [Start Application](#start-application)
-3.  [API Documentation](#api-documentation)
+3. [API Documentation](#api-documentation)
 
 
 ## Installation
