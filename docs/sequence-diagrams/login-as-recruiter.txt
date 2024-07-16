@@ -1,0 +1,9 @@
+title Login as Recruiter
+
+Recruiter->Web UI: Enter credentials
+Web UI->Controller: POST /login (credentials)
+Controller->Service: Authenticate credentials
+Service->Database: Validate credentials
+Database->Service: Return authentication result
+Service->Web UI: Respond with authentication status
+Web UI->Recruiter: Redirect to dashboard if authenticated
