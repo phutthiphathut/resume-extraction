@@ -1,0 +1,9 @@
+title Search Resume by Skill
+
+Recruiter->Web UI: Enter search criteria (skill)
+Web UI->Controller: POST /searchResumeBySkill (skill)
+Controller->Service: Retrieve resumes matching skill
+Service->Database: Query resumes by skill
+Database->Service: Return matching resumes
+Service->Web UI: Send matching resumes
+Web UI->Recruiter: Display resumes
