@@ -1,0 +1,18 @@
+@startuml
+title View Applicant Profile by Each Resume
+
+actor Recruiter as "Recruiter"
+boundary WebUI as "Web UI"
+control Controller as "ResumeController"
+control Service as "ResumeService"
+database Database as "Database\n<<applicant profile>>"
+
+Recruiter -> WebUI: Select a resume
+WebUI -> Controller: GET /viewResumeData/{resumeId}
+Controller -> Service: Retrieve structured data for resume
+Service -> Database: Query data for the specified resume
+Database --> Service: Return structured data
+Service --> WebUI: Send structured data
+WebUI --> Recruiter: Display applicant profile
+
+@enduml

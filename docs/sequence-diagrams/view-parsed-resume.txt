@@ -1,0 +1,18 @@
+@startuml
+title View Parsed Resume
+
+actor JobSeeker as "Job Seeker"
+boundary WebUI as "Web UI"
+control Controller as "ResumeController"
+control Service as "ResumeService"
+database Database as "Database\n<<applicant profile>>"
+
+JobSeeker -> WebUI: Request to view parsed resume
+WebUI -> Controller: GET /viewParsedResume/{resumeId}
+Controller -> Service: Retrieve parsed resume data
+Service -> Database: Query structured data for resume
+Database --> Service: Return parsed resume data
+Service --> WebUI: Send parsed resume data
+WebUI --> JobSeeker: Display parsed resume data
+
+@enduml

@@ -1,0 +1,18 @@
+@startuml
+title Register Account as Job Seeker
+
+actor JobSeeker as "Job Seeker"
+boundary WebUI as "Web UI"
+control Controller as "AuthController"
+control Service as "AuthService"
+database Database as "Database\n<<users>>"
+
+JobSeeker -> WebUI: Enter registration details
+WebUI -> Controller: POST /register (registration details)
+Controller -> Service: Process registration details
+Service -> Database: Save new job seeker account
+Database --> Service: Return success status
+Service --> WebUI: Respond with registration success
+WebUI --> JobSeeker: Display success message and log in
+
+@enduml

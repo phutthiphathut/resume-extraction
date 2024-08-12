@@ -1,18 +1,18 @@
 @startuml
-title Login as Recruiter
+title Login as Job Seeker
 
-actor Recruiter as "Recruiter"
+actor JobSeeker as "Job Seeker"
 boundary WebUI as "Web UI"
 control Controller as "AuthController"
 control Service as "AuthService"
 database Database as "Database\n<<users>>"
 
-Recruiter -> WebUI: Enter credentials
+JobSeeker -> WebUI: Enter credentials
 WebUI -> Controller: POST /login (users)
 Controller -> Service: Authenticate credentials
 Service -> Database: Validate credentials
 Database --> Service: Return authentication result
 Service --> WebUI: Respond with authentication status
-WebUI --> Recruiter: Redirect to dashboard if authenticated
+WebUI --> JobSeeker: Redirect to dashboard if authenticated
 
 @enduml

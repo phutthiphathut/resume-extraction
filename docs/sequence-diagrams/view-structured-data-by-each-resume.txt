@@ -1,9 +1,0 @@
-title View Structured Data by Each Resume
-
-Recruiter->Web UI: Select a resume
-Web UI->Controller: GET /viewResumeData/{resumeId}
-Controller->Service: Retrieve structured data for resume
-Service->Database: Query data for the specified resume
-Database->Service: Return structured data
-Service->Web UI: Send structured data
-Web UI->Recruiter: Display structured data

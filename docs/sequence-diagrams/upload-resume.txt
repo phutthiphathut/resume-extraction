@@ -1,15 +1,25 @@
+@startuml
 title Upload Resume
 
-Job Seeker->Web UI: Upload resume file in PDF
-Web UI->Controller: Send API with PDF file to extract data
-Controller->Service: Send PDF file to extract service
-Service->Service: Read file and get extracted data 
+actor JobSeeker as "Job Seeker"
+boundary WebUI as "Web UI"
+control Controller as "ResumeController"
+control Service as "ResumeService"
+database Database as "Database\n<<applicant profile>>"
+boundary FileStorage as "File Storage"
+
+JobSeeker -> WebUI: Upload resume file in PDF
+WebUI -> Controller: Send API with PDF file to extract data
+Controller -> Service: Send PDF file to extract service
+Service -> Service: Read file and get extracted data
 note right of Service
-PyResParser
+  PyResParser
 end note
-Service->Database: Save extracted data
-Database->Service: Save successfully
-Service->File Storage: Store resume file
-File Storage->Service: Save successfully
-Service->Web UI: Response successfully status code
-Web UI->Job Seeker: Display successfully message
+Service -> Database: Save extracted data
+Database --> Service: Save successfully
+Service -> FileStorage: Store resume file
+FileStorage --> Service: Save successfully
+Service --> WebUI: Response with success status code
+WebUI --> JobSeeker: Display success message
+
+@enduml
