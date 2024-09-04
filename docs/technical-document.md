@@ -95,7 +95,7 @@
         - Pre-condition: User has registered and has a valid recruiter account.
         - Post-condition: User is authenticated and logged in to the system.
 
-    - **View Structured Data by Each Resume**
+    - **View Applicant Profile by Each Resume**
 
         - Actor: Recruiter
         - Description: Recruiter views the structured data extracted from each resume.
@@ -109,12 +109,46 @@
         - Pre-condition: Parsed resume data exists in the system.
         - Post-condition: Relevant resumes matching the search criteria are displayed.
 
-
 ## System Design
 
 ### System Architecture
-    ![System Architecture](./system-architecture/system-architecture.jpg)
+
+![System Architecture](./system-architecture/system-architecture.jpg)
+
 ### Sequence Diagram
+
+- Job Seeker
+
+    - **Register Account as Job Seeker**
+
+        ![Register Account as Job Seeker](./sequence-diagrams/register-account-as-job-seeker.png)
+
+    - **Login as Job Seeker**
+
+        ![Login as Job Seeker](./sequence-diagrams/login-as-job-seeker.png)
+
+    - **Upload Resume**
+
+        ![Upload Resume](./sequence-diagrams/upload-resume.png)
+
+    - **View Parsed Resume**
+
+        ![View Parsed Resume](./sequence-diagrams/view-parsed-resume.png)
+
+- Recruiter
+
+    - **Login as Recruiter**
+
+        ![Login as Recruiter](./sequence-diagrams/login-as-recruiter.png)
+
+    - **View Applicant Profile by Each Resume**
+
+        ![View Applicant Profile by Each Resume](./sequence-diagrams/view-applicant-profile-by-each-resume.png)
+
+    - **Search Resume by Skill**
+
+        ![Search Resume by Skill](./sequence-diagrams/search-resume-by-skill.png)
+
 ### Tech Stack
 ### Database Design
 ### API Specification
