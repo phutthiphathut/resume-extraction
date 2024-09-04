@@ -108,3 +108,13 @@
         - Description: Recruiter searches for resumes based on specific skills.
         - Pre-condition: Parsed resume data exists in the system.
         - Post-condition: Relevant resumes matching the search criteria are displayed.
+
+
+## System Design
+
+### System Architecture
+    ![System Architecture](./system-architecture/system-architecture.jpg)
+### Sequence Diagram
+### Tech Stack
+### Database Design
+### API Specification
