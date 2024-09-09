@@ -1,26 +1,25 @@
 from fastapi import APIRouter, HTTPException, UploadFile
-from services.job_seeker_service import JobSeekerService
+from services.job_seeker_service import get_profile, login_job_seeker, register_job_seeker, update_resume, upload_resume
+from models.responses.job_seeker_response import RegisterJobSeekerResponse
+from models.requests.job_seeker_request import RegisterJobSeekerRequest
 
 router = APIRouter(
     prefix="/jobseekers",
     tags=["Job Seekers"],
 )
 
-service = JobSeekerService()
+@router.post("/register", response_model=RegisterJobSeekerResponse)
+async def register_job_seeker_handler(request: RegisterJobSeekerRequest):
+    await register_job_seeker(request)
 
-@router.post("/register")
-async def register_job_seeker():
-    response_data = await service.register_job_seeker()
-
-    return {
-        "statusCode": 200, 
-        "statusMessage": "Register successfully.", 
-        "data": response_data
-    }
+    return RegisterJobSeekerResponse(
+        statusCode=200,
+        statusMessage="Register successfully."
+    )
 
 @router.post("/login")
-async def login_job_seeker():
-    response_data = await service.login_job_seeker()
+async def login_job_seekerr_handler():
+    response_data = await login_job_seeker()
 
     return {
         "statusCode": 200, 
@@ -29,11 +28,11 @@ async def login_job_seeker():
     }
 
 @router.post("/{jobseeker_id}/resumes")
-async def upload_resume(file: UploadFile):
+async def upload_resumer_handler(file: UploadFile):
     if file.content_type != "application/pdf":
         raise HTTPException(status_code=400, detail="Invalid file type. Only PDF files are allowed.")
     
-    response_data = await service.upload_resume(file)
+    response_data = await upload_resume(file)
 
     return {
         "statusCode": 200, 
@@ -42,11 +41,11 @@ async def upload_resume(file: UploadFile):
     }
 
 @router.put("/{jobseeker_id}/resumes")
-async def update_resume(file: UploadFile):
+async def update_resumer_handler(file: UploadFile):
     if file.content_type != "application/pdf":
         raise HTTPException(status_code=400, detail="Invalid file type. Only PDF files are allowed.")
     
-    response_data = await service.update_resume(file)
+    response_data = await update_resume(file)
 
     return {
         "statusCode": 200, 
@@ -55,9 +54,9 @@ async def update_resume(file: UploadFile):
     }
 
 @router.get("/{jobseeker_id}/profiles")
-async def get_profile():
+async def get_profiler_handler():
     
-    response_data = await service.get_profile()
+    response_data = await get_profile()
 
     return {
         "statusCode": 200, 
