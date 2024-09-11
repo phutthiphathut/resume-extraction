@@ -1,60 +1,74 @@
 import tempfile
 import os
-from fastapi import UploadFile
+from fastapi import UploadFile, status
 from pyresparser import ResumeParser
 
-from repositories.job_seeker_repository import insert_job_seeker
+from repositories.job_seeker_repository import JobSeekerRepository
 from models.collections.job_seeker import JobSeeker
 from models.requests.job_seeker_request import RegisterJobSeekerRequest
 from models.responses.job_seeker_response import RegisterJobSeekerResponse
 
-async def register_job_seeker(request: RegisterJobSeekerRequest) -> RegisterJobSeekerResponse:
-    entity = JobSeeker(
-        email=request.email,
-        password=request.password
-    )
 
-    insert_id = await insert_job_seeker(entity)
-    print(f"Insert job seeker ID : {insert_id}")
+class JobSeekerService:
+    @staticmethod
+    async def register(request: RegisterJobSeekerRequest) -> RegisterJobSeekerResponse:
+        # existing_job_seeker = await JobSeekerRepository.get_by_email(request.email)
 
-    return RegisterJobSeekerResponse(
-        statusCode=200,
-        statusMessage="Register successfully."
-    )
+        # if existing_job_seeker:
+        #     return RegisterJobSeekerResponse(
+        #         statusCode=status.HTTP_400_BAD_REQUEST,
+        #         statusMessage="Email is already registered."
+        #     )
 
-async def login_job_seeker() -> dict:
-    return "login jobseeker"
+        jobSeeker = JobSeeker(
+            email=request.email,
+            password=request.password
+        )
 
-async def upload_resume(file: UploadFile) -> dict:
+        result = await JobSeekerRepository.create(jobSeeker)
+        print(f"Insert job seeker ID : {result.id}")
+
+        return RegisterJobSeekerResponse(
+            statusCode=status.HTTP_201_CREATED,
+            statusMessage="Register successfully."
+        )
+
+    @staticmethod
+    async def login() -> dict:
+        return "login jobseeker"
+
+    @staticmethod
+    async def upload_resume(file: UploadFile) -> dict:
         # Save the uploaded file to a temporary location
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp_file:
-        temp_file.write(file.file.read())
-        temp_file_path = temp_file.name
-    print(temp_file_path)
-    
-    # Extract data from the resume
-    data = ResumeParser(temp_file_path).get_extracted_data()
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp_file:
+            temp_file.write(file.file.read())
+            temp_file_path = temp_file.name
+        print(temp_file_path)
 
-    # Clean up the temporary file
-    os.remove(temp_file_path)
+        # Extract data from the resume
+        data = ResumeParser(temp_file_path).get_extracted_data()
 
-    return data
+        # Clean up the temporary file
+        os.remove(temp_file_path)
 
-async def update_resume(file: UploadFile) -> dict:
+        return data
+
+    @staticmethod
+    async def update_resume(file: UploadFile) -> dict:
         # Save the uploaded file to a temporary location
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp_file:
-        temp_file.write(file.file.read())
-        temp_file_path = temp_file.name
-    print(temp_file_path)
-    
-    # Extract data from the resume
-    data = ResumeParser(temp_file_path).get_extracted_data()
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp_file:
+            temp_file.write(file.file.read())
+            temp_file_path = temp_file.name
+        print(temp_file_path)
 
-    # Clean up the temporary file
-    os.remove(temp_file_path)
+        # Extract data from the resume
+        data = ResumeParser(temp_file_path).get_extracted_data()
 
-    return data
+        # Clean up the temporary file
+        os.remove(temp_file_path)
 
-async def get_profile() -> dict:
+        return data
 
-    return "get profile"
+    @staticmethod
+    async def get_profile() -> dict:
+        return "get profile"
