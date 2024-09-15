@@ -1,0 +1,23 @@
+[tool.poetry]
+name = "resume-extraction"
+version = "0.1.0"
+description = ""
+authors = ["Phutthiphat Tatiyawongsoonthorn <supphasithut@gmail.com>"]
+readme = "README.md"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "3.9.19"
+fastapi = "^0.114.2"
+pyresparser = "^1.0.6"
+spacy = "^3.7.6"
+en-core-web-sm = {url = "https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.7.1/en_core_web_sm-3.7.1-py3-none-any.whl"}
+nltk = "^3.9.1"
+
+[tool.poetry.scripts]
+download-nltk-data = "download_nltk_data:main"
+run-app = "app.main:run"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

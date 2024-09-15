@@ -23,7 +23,12 @@
    
 2. Install the dependencies:
     ```bash
-    pip install -r requirements.txt
+    poetry install
+    ``` 
+
+3. Download NLTK corpora
+    ```bash
+    poetry run download-nltk-data
     ``` 
 
 ## Start Application
