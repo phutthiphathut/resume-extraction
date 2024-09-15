@@ -1,8 +1,12 @@
+from typing import Generic, Optional, TypeVar
 from pydantic import BaseModel
 
-class BaseResponse(BaseModel):
+T = TypeVar('T')
+
+class BaseResponse(Generic[T], BaseModel):
     statusCode: int
     statusMessage: str
+    data: Optional[T] = None
 
-class RegisterJobSeekerResponse(BaseResponse):
+class LoginJobSeekerResponse(BaseResponse):
     pass

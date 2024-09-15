@@ -1,7 +1,12 @@
 from pydantic import BaseModel, EmailStr, field_validator
 
 
-class RegisterJobSeekerRequest(BaseModel):
+class BaseRequest(BaseModel):
+    class Config:
+        str_strip_whitespace = True
+
+
+class RegisterJobSeekerRequest(BaseRequest):
     email: EmailStr
     password: str
 
@@ -16,5 +21,6 @@ class RegisterJobSeekerRequest(BaseModel):
 
         return value
 
-    class Config:
-        str_strip_whitespace = True
+class LoginJobSeekerRequest(BaseRequest):
+    email: EmailStr
+    password: str
