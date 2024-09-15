@@ -1,19 +1,18 @@
 from typing import Optional
-
-from bson import ObjectId
+from pymongo.collection import Collection
 
 from models.collections.job_seeker import JobSeeker
-from databases.mongo_db import db
+from databases.mongo_db import database
 
 COLLECTION_NAME = "job_seekers"
-collection = db[COLLECTION_NAME]
+collection: Collection = database[COLLECTION_NAME]
 
 
 class JobSeekerRepository:
     @staticmethod
     async def get_by_email(email: str) -> Optional[JobSeeker]:
         result = await collection.find_one({"email": email})
-
+        
         if result:
             return JobSeeker(**result)
 

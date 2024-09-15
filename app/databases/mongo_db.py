@@ -1,8 +1,11 @@
+import logging
 from motor.motor_asyncio import AsyncIOMotorClient
 
 from configs.app_config import appConfig
 
-mongo_client = AsyncIOMotorClient(appConfig.MONGO_DB_URL)
-print("Connected to MongoDB successfully!")
+log = logging.getLogger(__name__)
 
-db = mongo_client[appConfig.MONGO_DB_NAME]
+mongo_client = AsyncIOMotorClient(appConfig.MONGO_DB_URL)
+log.info("Connected to MongoDB successfully!")
+
+database = mongo_client[appConfig.MONGO_DB_NAME]
