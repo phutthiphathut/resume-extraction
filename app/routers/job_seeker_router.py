@@ -1,8 +1,8 @@
-from fastapi import APIRouter, HTTPException, UploadFile, status
+from fastapi import APIRouter, HTTPException, UploadFile
 
 from services.job_seeker_service import JobSeekerService
-from models.responses import RegisterJobSeekerResponse
-from models.requests import RegisterJobSeekerRequest
+from models.requests import RegisterJobSeekerRequest, LoginJobSeekerRequest
+from models.responses import LoginJobSeekerResponse, RegisterJobSeekerResponse
 
 router = APIRouter(
     prefix="/jobseekers",
@@ -16,15 +16,10 @@ async def register_job_seeker(request: RegisterJobSeekerRequest):
     return response
 
 
-@router.post("/login")
-async def login_job_seeker():
-    response_data = await JobSeekerService.login()
-
-    return {
-        "statusCode": 200,
-        "statusMessage": "Login successfully.",
-        "data": response_data
-    }
+@router.post("/login", response_model=LoginJobSeekerResponse)
+async def login_job_seeker(request: LoginJobSeekerRequest):
+    response = await JobSeekerService.login(request)
+    return response
 
 
 @router.post("/{jobseeker_id}/resumes")
