@@ -1,6 +1,7 @@
 import pytz
 from datetime import datetime
 
-
-def get_local_datetime() -> datetime:
-    return datetime.now(pytz.timezone('Asia/Bangkok'))
+class DatetimeUtil:
+    @staticmethod
+    def get_local_datetime() -> datetime:
+        return datetime.now(pytz.timezone('Asia/Bangkok'))
