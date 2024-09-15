@@ -5,9 +5,9 @@ from fastapi import UploadFile, status
 from pyresparser import ResumeParser
 
 from repositories.job_seeker_repository import JobSeekerRepository
-from models.collections.job_seeker import JobSeeker
-from models.requests.job_seeker_request import RegisterJobSeekerRequest
-from models.responses.job_seeker_response import RegisterJobSeekerResponse
+from models.collections import JobSeeker
+from models.requests import RegisterJobSeekerRequest
+from models.responses import RegisterJobSeekerResponse
 from utils.password_util import hash
 
 log = logging.getLogger(__name__)

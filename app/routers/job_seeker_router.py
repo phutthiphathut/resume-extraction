@@ -1,8 +1,8 @@
 from fastapi import APIRouter, HTTPException, UploadFile, status
 
 from services.job_seeker_service import JobSeekerService
-from models.responses.job_seeker_response import RegisterJobSeekerResponse
-from models.requests.job_seeker_request import RegisterJobSeekerRequest
+from models.responses import RegisterJobSeekerResponse
+from models.requests import RegisterJobSeekerRequest
 
 router = APIRouter(
     prefix="/jobseekers",

@@ -1,7 +1,7 @@
 from typing import Optional
 from pymongo.collection import Collection
 
-from models.collections.job_seeker import JobSeeker
+from models.collections import JobSeeker
 from databases.mongo_db import database
 
 COLLECTION_NAME = "job_seekers"

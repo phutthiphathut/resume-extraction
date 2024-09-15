@@ -1,5 +1,5 @@
 from datetime import datetime
-from pydantic import BaseModel, Field, field_validator
+from pydantic import BaseModel, EmailStr, Field, field_validator
 from bson import ObjectId
 from typing import Optional
 
@@ -24,3 +24,8 @@ class MongoBaseModel(BaseModel):
         json_encoders = {ObjectId: str}
         populate_by_name = True
         arbitrary_types_allowed = True
+
+
+class JobSeeker(MongoBaseModel):
+    email: EmailStr
+    password: str
