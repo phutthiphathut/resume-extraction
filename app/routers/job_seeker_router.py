@@ -10,7 +10,7 @@ router = APIRouter(
 )
 
 
-@router.post("/register", status_code=status.HTTP_201_CREATED, response_model=RegisterJobSeekerResponse)
+@router.post("/register", response_model=RegisterJobSeekerResponse)
 async def register_job_seeker(request: RegisterJobSeekerRequest):
     response = await JobSeekerService.register(request)
     return response
