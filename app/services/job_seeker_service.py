@@ -1,3 +1,4 @@
+import logging
 import tempfile
 import os
 from fastapi import UploadFile, status
@@ -7,31 +8,42 @@ from repositories.job_seeker_repository import JobSeekerRepository
 from models.collections.job_seeker import JobSeeker
 from models.requests.job_seeker_request import RegisterJobSeekerRequest
 from models.responses.job_seeker_response import RegisterJobSeekerResponse
+from utils.password_util import hash
+
+log = logging.getLogger(__name__)
 
 
 class JobSeekerService:
     @staticmethod
     async def register(request: RegisterJobSeekerRequest) -> RegisterJobSeekerResponse:
-        # existing_job_seeker = await JobSeekerRepository.get_by_email(request.email)
+        try:
+            existing_job_seeker = await JobSeekerRepository.get_by_email(request.email)
 
-        # if existing_job_seeker:
-        #     return RegisterJobSeekerResponse(
-        #         statusCode=status.HTTP_400_BAD_REQUEST,
-        #         statusMessage="Email is already registered."
-        #     )
+            if existing_job_seeker:
+                return RegisterJobSeekerResponse(
+                    statusCode=status.HTTP_400_BAD_REQUEST,
+                    statusMessage="Email is already registered."
+                )
 
-        jobSeeker = JobSeeker(
-            email=request.email,
-            password=request.password
-        )
+            jobSeeker = JobSeeker(
+                email=request.email,
+                password=hash(request.password)
+            )
 
-        result = await JobSeekerRepository.create(jobSeeker)
-        print(f"Insert job seeker ID : {result.id}")
+            result = await JobSeekerRepository.create(jobSeeker)
+            log.info(f"Insert job seeker ID : {result.id}")
 
-        return RegisterJobSeekerResponse(
-            statusCode=status.HTTP_201_CREATED,
-            statusMessage="Register successfully."
-        )
+            return RegisterJobSeekerResponse(
+                statusCode=status.HTTP_201_CREATED,
+                statusMessage="Register successfully."
+            )
+
+        except Exception as e:
+            log.error(f"Error: {str(e)}")
+            return RegisterJobSeekerResponse(
+                statusCode=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                statusMessage="An internal server error occurred."
+            )
 
     @staticmethod
     async def login() -> dict:
