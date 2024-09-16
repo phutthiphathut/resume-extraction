@@ -20,7 +20,13 @@ class RegisterJobSeekerRequest(BaseRequest):
             raise ValueError('Password must contain at least one number')
 
         return value
+    
+    class Config:
+        str_strip_whitespace = False
 
 class LoginJobSeekerRequest(BaseRequest):
     email: EmailStr
     password: str
+
+    class Config:
+        str_strip_whitespace = False
