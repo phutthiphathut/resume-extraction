@@ -7,7 +7,7 @@ from pyresparser import ResumeParser
 from repositories.job_seeker_repository import JobSeekerRepository
 from models.collections import JobSeeker
 from models.requests import LoginJobSeekerRequest, RegisterJobSeekerRequest
-from models.responses import LoginJobSeekerResponse, RegisterJobSeekerResponse
+from models.responses import BaseResponse, FailResponse, LoginJobSeekerResponseData, SuccessResponse
 from utils.password_util import PasswordUtil
 from utils.jwt_util import JwtUtil
 
@@ -16,14 +16,14 @@ log = logging.getLogger(__name__)
 
 class JobSeekerService:
     @staticmethod
-    async def register(request: RegisterJobSeekerRequest) -> RegisterJobSeekerResponse:
+    async def register(request: RegisterJobSeekerRequest) -> BaseResponse:
         try:
             existing_job_seeker = await JobSeekerRepository.get_by_email(request.email)
 
             if existing_job_seeker:
-                return RegisterJobSeekerResponse(
-                    statusCode=status.HTTP_400_BAD_REQUEST,
-                    statusMessage="Email is already registered."
+                return FailResponse(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    status_message="Email is already registered."
                 )
 
             jobSeeker = JobSeeker(
@@ -34,50 +34,53 @@ class JobSeekerService:
             result = await JobSeekerRepository.create(jobSeeker)
             log.info(f"Insert job seeker ID : {result.id}")
 
-            return RegisterJobSeekerResponse(
-                statusCode=status.HTTP_201_CREATED,
-                statusMessage="Register successful."
+            return SuccessResponse(
+                status_code=status.HTTP_201_CREATED,
+                status_message="Register successful."
             )
         except Exception as e:
             log.error(f"Error: {str(e)}")
-            return RegisterJobSeekerResponse(
-                statusCode=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                statusMessage="An internal server error occurred."
+            return FailResponse(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                status_message="An internal server error occurred."
             )
 
     @staticmethod
-    async def login(request: LoginJobSeekerRequest) -> LoginJobSeekerResponse:
+    async def login(request: LoginJobSeekerRequest) -> BaseResponse:
         try:
             existing_job_seeker = await JobSeekerRepository.get_by_email(request.email)
 
             if existing_job_seeker is None:
-                return LoginJobSeekerResponse(
-                    statusCode=status.HTTP_400_BAD_REQUEST,
-                    statusMessage="Invalid email or password."
+                return FailResponse(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    status_message="Invalid email or password."
                 )
 
             if not PasswordUtil.verify(request.password, existing_job_seeker.password):
-                return LoginJobSeekerResponse(
-                    statusCode=status.HTTP_400_BAD_REQUEST,
-                    statusMessage="Invalid email or password."
+                return FailResponse(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    status_message="Invalid email or password."
                 )
 
             payload = {
                 "sub": existing_job_seeker.id,
                 "email": existing_job_seeker.email
             }
-            
+
             token = JwtUtil.create(payload)
 
-            return LoginJobSeekerResponse(
-                statusCode=status.HTTP_200_OK,
-                statusMessage="Login successful."
+            return SuccessResponse[LoginJobSeekerResponseData](
+                status_code=status.HTTP_200_OK,
+                status_message="Login successful.",
+                data=LoginJobSeekerResponseData(
+                    access_token=token
+                )
             )
         except Exception as e:
             log.error(f"Error: {str(e)}")
-            return LoginJobSeekerResponse(
-                statusCode=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                statusMessage="An internal server error occurred."
+            return FailResponse(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                status_message="An internal server error occurred."
             )
 
     @staticmethod

@@ -3,10 +3,15 @@ from pydantic import BaseModel
 
 T = TypeVar('T')
 
-class BaseResponse(Generic[T], BaseModel):
-    statusCode: int
-    statusMessage: str
+class BaseResponse(BaseModel):
+    status_code: int
+    status_message: str
+
+class SuccessResponse(BaseResponse, Generic[T]):
     data: Optional[T] = None
 
-class LoginJobSeekerResponse(BaseResponse):
+class FailResponse(BaseResponse):
     pass
+
+class LoginJobSeekerResponseData():
+    access_token: str

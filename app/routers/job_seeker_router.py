@@ -2,7 +2,6 @@ from fastapi import APIRouter, HTTPException, UploadFile
 
 from services.job_seeker_service import JobSeekerService
 from models.requests import RegisterJobSeekerRequest, LoginJobSeekerRequest
-from models.responses import LoginJobSeekerResponse, RegisterJobSeekerResponse
 
 router = APIRouter(
     prefix="/jobseekers",
@@ -10,13 +9,13 @@ router = APIRouter(
 )
 
 
-@router.post("/register", response_model=RegisterJobSeekerResponse)
+@router.post("/register")
 async def register_job_seeker(request: RegisterJobSeekerRequest):
     response = await JobSeekerService.register(request)
     return response
 
 
-@router.post("/login", response_model=LoginJobSeekerResponse)
+@router.post("/login")
 async def login_job_seeker(request: LoginJobSeekerRequest):
     response = await JobSeekerService.login(request)
     return response
