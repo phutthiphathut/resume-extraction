@@ -63,7 +63,7 @@ class JobSeekerService:
                 )
 
             payload = {
-                "sub": existing_job_seeker.id,
+                "sub": str(existing_job_seeker.id),
                 "email": existing_job_seeker.email
             }
 

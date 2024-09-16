@@ -13,5 +13,5 @@ class SuccessResponse(BaseResponse, Generic[T]):
 class FailResponse(BaseResponse):
     pass
 
-class LoginJobSeekerResponseData():
+class LoginJobSeekerResponseData(BaseModel):
     access_token: str
