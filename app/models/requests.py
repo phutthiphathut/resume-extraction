@@ -1,12 +1,8 @@
+from fastapi import File, UploadFile
 from pydantic import BaseModel, EmailStr, field_validator
 
 
-class BaseRequest(BaseModel):
-    class Config:
-        str_strip_whitespace = True
-
-
-class RegisterJobSeekerRequest(BaseRequest):
+class RegisterJobSeekerRequest(BaseModel):
     email: EmailStr
     password: str
 
@@ -20,13 +16,19 @@ class RegisterJobSeekerRequest(BaseRequest):
             raise ValueError('Password must contain at least one number')
 
         return value
-    
-    class Config:
-        str_strip_whitespace = False
 
-class LoginJobSeekerRequest(BaseRequest):
+
+class LoginJobSeekerRequest(BaseModel):
     email: EmailStr
     password: str
 
-    class Config:
-        str_strip_whitespace = False
+
+class UploadJobSeekerResumeRequest(BaseModel):
+    resume_file: UploadFile
+
+    @classmethod
+    def as_form(cls, resume_file: UploadFile = File(...)):
+        if not resume_file.filename.endswith(".pdf"):
+            raise ValueError("Only PDF files are allowed.")
+
+        return cls(resume_file=resume_file)

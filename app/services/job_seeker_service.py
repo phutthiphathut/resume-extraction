@@ -1,13 +1,14 @@
 import logging
 import tempfile
 import os
+from typing import Any, Dict
 from fastapi import UploadFile, status
 from pyresparser import ResumeParser
 
 from repositories.job_seeker_repository import JobSeekerRepository
 from models.collections import JobSeeker
-from models.requests import LoginJobSeekerRequest, RegisterJobSeekerRequest
-from models.responses import BaseResponse, FailResponse, LoginJobSeekerResponseData, SuccessResponse
+from models.requests import LoginJobSeekerRequest, RegisterJobSeekerRequest, UploadJobSeekerResumeRequest
+from models.responses import BaseResponse, FailResponse, LoginJobSeekerResponseData, SuccessResponse, UploadJobSeekerResumeResponseData
 from utils.password_util import PasswordUtil
 from utils.jwt_util import JwtUtil
 
@@ -84,20 +85,25 @@ class JobSeekerService:
             )
 
     @staticmethod
-    async def upload_resume(file: UploadFile) -> dict:
-        # Save the uploaded file to a temporary location
-        with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp_file:
-            temp_file.write(file.file.read())
-            temp_file_path = temp_file.name
-        print(temp_file_path)
+    async def upload_resume(request: UploadJobSeekerResumeRequest) -> BaseResponse:
+        try:
+            temp_file_path = await JobSeekerService._save_temp_file(request.resume_file)
 
-        # Extract data from the resume
-        data = ResumeParser(temp_file_path).get_extracted_data()
+            extracted_data = JobSeekerService._extract_data_from_resume(temp_file_path)
 
-        # Clean up the temporary file
-        os.remove(temp_file_path)
+            await JobSeekerService._cleanup_temp_file(temp_file_path)
 
-        return data
+            return SuccessResponse[UploadJobSeekerResumeResponseData](
+                status_code=status.HTTP_200_OK,
+                status_message="Resume uploaded successfully.",
+                data=UploadJobSeekerResumeResponseData.model_validate(extracted_data)
+            )
+        except Exception as e:
+            log.error(f"Error: {str(e)}")
+            return FailResponse(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                status_message="An internal server error occurred."
+            )
 
     @staticmethod
     async def update_resume(file: UploadFile) -> dict:
@@ -118,3 +124,30 @@ class JobSeekerService:
     @staticmethod
     async def get_profile() -> dict:
         return "get profile"
+
+    @staticmethod
+    async def _save_temp_file(file: UploadFile) -> str:
+        try:
+            with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp_file:
+                temp_file.write(file.file.read())
+                return temp_file.name
+        except Exception as e:
+            log.error(f"Error saving file: {str(e)}")
+            raise Exception("Error saving file")
+
+    @staticmethod
+    def _extract_data_from_resume(file_path: str) -> Dict[str, Any]:
+        try:
+            data = ResumeParser(file_path).get_extracted_data()
+            return data
+        except Exception as e:
+            log.error(f"Error extracting data from resume: {str(e)}")
+            raise Exception("Error extracting data from resume")
+
+    @staticmethod
+    async def _cleanup_temp_file(file_path: str) -> None:
+        try:
+            os.remove(file_path)
+        except Exception as e:
+            log.error(f"Error removing temporary file: {str(e)}")
+            raise Exception("Error removing temporary file")

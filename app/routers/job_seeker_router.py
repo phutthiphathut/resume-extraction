@@ -1,7 +1,7 @@
-from fastapi import APIRouter, HTTPException, UploadFile
+from fastapi import APIRouter, Depends, HTTPException, UploadFile
 
 from services.job_seeker_service import JobSeekerService
-from models.requests import RegisterJobSeekerRequest, LoginJobSeekerRequest
+from models.requests import RegisterJobSeekerRequest, LoginJobSeekerRequest, UploadJobSeekerResumeRequest
 
 router = APIRouter(
     prefix="/jobseekers",
@@ -22,18 +22,9 @@ async def login_job_seeker(request: LoginJobSeekerRequest):
 
 
 @router.post("/{jobseeker_id}/resumes")
-async def upload_resume(file: UploadFile):
-    if file.content_type != "application/pdf":
-        raise HTTPException(
-            status_code=400, detail="Invalid file type. Only PDF files are allowed.")
-
-    response_data = await JobSeekerService.upload_resume(file)
-
-    return {
-        "statusCode": 200,
-        "statusMessage": "Extracted data from file successfully.",
-        "data": response_data
-    }
+async def upload_job_seeker_resume(request: UploadJobSeekerResumeRequest = Depends(UploadJobSeekerResumeRequest.as_form)):
+    response = await JobSeekerService.upload_resume(request)
+    return response
 
 
 @router.put("/{jobseeker_id}/resumes")
