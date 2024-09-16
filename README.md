@@ -11,7 +11,7 @@
 
 ### Prerequisites
 - Python 3.9.19
-- pip (Python package installer)
+- poetry (Python package installer)
 
 
 ### Steps
@@ -26,9 +26,9 @@
     poetry install
     ``` 
 
-3. Download NLTK corpora
+3. Download NLTK data
     ```bash
-    poetry run download-nltk-data
+    python download_nltk_data.py
     ``` 
 
 ## Start Application
