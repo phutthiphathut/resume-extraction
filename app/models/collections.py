@@ -29,3 +29,8 @@ class MongoBaseModel(BaseModel):
 class JobSeeker(MongoBaseModel):
     email: EmailStr
     password: str
+
+
+class Recruiter(MongoBaseModel):
+    email: EmailStr
+    password: str
