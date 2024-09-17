@@ -1,6 +1,8 @@
 from typing import Optional
+from bson import ObjectId
 from pymongo.collection import Collection
 
+from models.profile import Profile
 from models.collections import JobSeeker
 from databases.mongo_db import database
 
@@ -26,10 +28,10 @@ class JobSeekerRepository:
         return job_seeker
 
     @staticmethod
-    async def update(job_seeker: JobSeeker) -> Optional[JobSeeker]:
+    async def update_profile(id: ObjectId, profile: Profile) -> Optional[JobSeeker]:
         result = await collection.find_one_and_update(
-            {"_id": job_seeker.id},
-            {"$set": job_seeker.model_dump(by_alias=True)},
+            {"_id": id},
+            {"$set": {"profile": profile.model_dump(by_alias=True)}},
             return_document=True
         )
 

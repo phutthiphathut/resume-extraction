@@ -2,9 +2,11 @@ import logging
 import tempfile
 import os
 from typing import Any, Dict
+from bson import ObjectId
 from fastapi import UploadFile, status
 from pyresparser import ResumeParser
 
+from models.profile import Profile
 from enums.role import Role
 from repositories.job_seeker_repository import JobSeekerRepository
 from models.collections import JobSeeker
@@ -87,20 +89,31 @@ class JobSeekerService:
             )
 
     @staticmethod
-    async def upload_resume(request: UploadJobSeekerResumeRequest) -> BaseResponse:
+    async def upload_resume(jobseeker_id: str, request: UploadJobSeekerResumeRequest) -> BaseResponse:
         try:
             temp_file_path = await JobSeekerService._save_temp_file(request.resume_file)
 
-            extracted_data = JobSeekerService._extract_data_from_resume(
-                temp_file_path)
+            extracted_data = JobSeekerService._extract_data_from_resume(temp_file_path)
 
             await JobSeekerService._cleanup_temp_file(temp_file_path)
+
+            profile = Profile.model_validate(extracted_data)
+            result = await JobSeekerRepository.update_profile(ObjectId(jobseeker_id), profile)
+
+            if result is None:
+                return FailResponse(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    status_message="Invalid job seeker id."
+                )
+
+            log.info(f"Update profile job seeker ID : {result.id}, {result.profile}")
 
             return SuccessResponse[UploadJobSeekerResumeResponseData](
                 status_code=status.HTTP_200_OK,
                 status_message="Resume uploaded successfully.",
-                data=UploadJobSeekerResumeResponseData.model_validate(
-                    extracted_data)
+                data=UploadJobSeekerResumeResponseData(
+                    profile=profile
+                )
             )
         except Exception as e:
             log.error(f"Error: {str(e)}")

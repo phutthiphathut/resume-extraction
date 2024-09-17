@@ -22,8 +22,8 @@ async def login_job_seeker(request: LoginJobSeekerRequest):
 
 
 @router.post("/{jobseeker_id}/resumes")
-async def upload_job_seeker_resume(request: UploadJobSeekerResumeRequest = Depends(UploadJobSeekerResumeRequest.as_form)):
-    response = await JobSeekerService.upload_resume(request)
+async def upload_job_seeker_resume(jobseeker_id: str, request: UploadJobSeekerResumeRequest = Depends(UploadJobSeekerResumeRequest.as_form)):
+    response = await JobSeekerService.upload_resume(jobseeker_id, request)
     return response
 
 
