@@ -21,25 +21,10 @@ async def login_job_seeker(request: LoginJobSeekerRequest):
     return response
 
 
-@router.post("/{jobseeker_id}/resumes")
+@router.put("/{jobseeker_id}/resumes")
 async def upload_job_seeker_resume(jobseeker_id: str, request: UploadJobSeekerResumeRequest = Depends(UploadJobSeekerResumeRequest.as_form)):
     response = await JobSeekerService.upload_resume(jobseeker_id, request)
     return response
-
-
-@router.put("/{jobseeker_id}/resumes")
-async def update_resume(file: UploadFile):
-    if file.content_type != "application/pdf":
-        raise HTTPException(
-            status_code=400, detail="Invalid file type. Only PDF files are allowed.")
-
-    response_data = await JobSeekerService.update_resume(file)
-
-    return {
-        "statusCode": 200,
-        "statusMessage": "Extracted data from file successfully.",
-        "data": response_data
-    }
 
 
 @router.get("/{jobseeker_id}/profiles")
