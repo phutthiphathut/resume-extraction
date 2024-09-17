@@ -1,15 +1,19 @@
 from datetime import datetime
+
 from pydantic import BaseModel, EmailStr, Field, field_validator
 from bson import ObjectId
 from typing import Optional
 
 from utils.datetime_util import DatetimeUtil
+from models.profile import Profile
 
 
 class MongoBaseModel(BaseModel):
     id: Optional[ObjectId] = Field(default_factory=ObjectId, alias="_id")
-    created_at: datetime = Field(default_factory=DatetimeUtil.get_local_datetime)
-    updated_at: datetime = Field(default_factory=DatetimeUtil.get_local_datetime)
+    created_at: datetime = Field(
+        default_factory=DatetimeUtil.get_local_datetime)
+    updated_at: datetime = Field(
+        default_factory=DatetimeUtil.get_local_datetime)
 
     def update_timestamp(self):
         self.updated_at = DatetimeUtil.get_local_datetime()
@@ -29,6 +33,7 @@ class MongoBaseModel(BaseModel):
 class JobSeeker(MongoBaseModel):
     email: EmailStr
     password: str
+    profile: Optional[Profile] = None
 
 
 class Recruiter(MongoBaseModel):
