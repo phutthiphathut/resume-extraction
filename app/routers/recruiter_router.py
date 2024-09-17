@@ -1,5 +1,6 @@
 from fastapi import APIRouter
 from services.recruiter_service import RecruiterService
+from models.requests import RegisterRecruiterRequest, LoginRecruiterRequest
 
 router = APIRouter(
     prefix="/recruiters",
@@ -9,21 +10,12 @@ router = APIRouter(
 service = RecruiterService()
 
 @router.post("/register")
-async def register_recruiter():
-    response_data = await service.register_recruiter()
+async def register_recruiter(request: RegisterRecruiterRequest):
+    response = await RecruiterService.register(request)
+    return response
 
-    return {
-        "statusCode": 200, 
-        "statusMessage": "Register successfully.", 
-        "data": response_data
-    }
 
 @router.post("/login")
-async def login_recruiter():
-    response_data = await service.login_recruiter()
-
-    return {
-        "statusCode": 200, 
-        "statusMessage": "Login successfully.", 
-        "data": response_data
-    }
+async def login_job_seeker(request: LoginRecruiterRequest):
+    response = await RecruiterService.login(request)
+    return response
