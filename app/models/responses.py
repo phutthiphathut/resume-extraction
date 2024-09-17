@@ -28,3 +28,6 @@ class UploadJobSeekerResumeResponseData(BaseModel):
     company_names: List[str]
     no_of_pages: int
     total_experience: float
+
+class LoginRecruiterResponseData(BaseModel):
+    access_token: str
