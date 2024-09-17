@@ -5,6 +5,7 @@ from typing import Any, Dict
 from fastapi import UploadFile, status
 from pyresparser import ResumeParser
 
+from enums.role import Role
 from repositories.job_seeker_repository import JobSeekerRepository
 from models.collections import JobSeeker
 from models.requests import LoginJobSeekerRequest, RegisterJobSeekerRequest, UploadJobSeekerResumeRequest
@@ -65,7 +66,8 @@ class JobSeekerService:
 
             payload = {
                 "sub": str(existing_job_seeker.id),
-                "email": existing_job_seeker.email
+                "email": existing_job_seeker.email,
+                "role": Role.JOB_SEEKER.value 
             }
 
             token = JwtUtil.create(payload)
@@ -89,14 +91,16 @@ class JobSeekerService:
         try:
             temp_file_path = await JobSeekerService._save_temp_file(request.resume_file)
 
-            extracted_data = JobSeekerService._extract_data_from_resume(temp_file_path)
+            extracted_data = JobSeekerService._extract_data_from_resume(
+                temp_file_path)
 
             await JobSeekerService._cleanup_temp_file(temp_file_path)
 
             return SuccessResponse[UploadJobSeekerResumeResponseData](
                 status_code=status.HTTP_200_OK,
                 status_message="Resume uploaded successfully.",
-                data=UploadJobSeekerResumeResponseData.model_validate(extracted_data)
+                data=UploadJobSeekerResumeResponseData.model_validate(
+                    extracted_data)
             )
         except Exception as e:
             log.error(f"Error: {str(e)}")

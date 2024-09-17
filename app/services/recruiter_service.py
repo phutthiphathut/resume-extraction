@@ -2,14 +2,16 @@ import logging
 
 from fastapi import status
 
+from enums.role import Role
 from repositories.recruiter_repository import RecruiterRepository
 from models.collections import Recruiter
 from models.requests import LoginRecruiterRequest, RegisterRecruiterRequest
-from models.responses import BaseResponse, FailResponse,LoginRecruiterResponseData ,SuccessResponse
+from models.responses import BaseResponse, FailResponse, LoginRecruiterResponseData, SuccessResponse
 from utils.password_util import PasswordUtil
 from utils.jwt_util import JwtUtil
 
 log = logging.getLogger(__name__)
+
 
 class RecruiterService:
     @staticmethod
@@ -61,7 +63,8 @@ class RecruiterService:
 
             payload = {
                 "sub": str(existing_recruiter.id),
-                "email": existing_recruiter.email
+                "email": existing_recruiter.email,
+                "role": Role.RECRUITER.value 
             }
 
             token = JwtUtil.create(payload)
