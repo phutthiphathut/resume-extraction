@@ -33,6 +33,9 @@ class MongoBaseModel(BaseModel):
 class JobSeeker(MongoBaseModel):
     email: EmailStr
     password: str
+    first_name: str
+    last_name: str
+    mobile_number: str
     profile: Optional[Profile] = None
 
 

@@ -32,7 +32,10 @@ class JobSeekerService:
 
             jobSeeker = JobSeeker(
                 email=request.email,
-                password=PasswordUtil.hash(request.password)
+                password=PasswordUtil.hash(request.password),
+                first_name=request.first_name,
+                last_name=request.last_name,
+                mobile_number=request.mobile_number
             )
 
             result = await JobSeekerRepository.create(jobSeeker)
