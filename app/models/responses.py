@@ -18,7 +18,6 @@ class SuccessResponse(BaseResponse, Generic[T]):
 class FailResponse(BaseResponse):
     pass
 
-
 class GetProfileJobSeekerResponseData(BaseModel):
     id: str
     email: EmailStr
@@ -26,7 +25,6 @@ class GetProfileJobSeekerResponseData(BaseModel):
     last_name: str
     mobile_number: str
     profile: Optional[Profile] = None
-
 
 class LoginJobSeekerResponseData(BaseModel):
     access_token: str

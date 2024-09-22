@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 from bson import ObjectId
 from pymongo.collection import Collection
 
@@ -11,6 +11,19 @@ collection: Collection = database[COLLECTION_NAME]
 
 
 class JobSeekerRepository:
+    @staticmethod
+    async def get_all(skill: Optional[str] = None) -> List[JobSeeker]:
+        query = {}
+        if skill:
+            query = {"profile.skills": skill}
+       
+        results = await collection.find(query).to_list(None)
+
+        if results:
+            return [JobSeeker(**result) for result in results]
+
+        return []
+
     @staticmethod
     async def get_by_email(email: str) -> Optional[JobSeeker]:
         result = await collection.find_one({"email": email})
