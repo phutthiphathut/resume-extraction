@@ -6,26 +6,12 @@ router = APIRouter(
     tags=["Profiles"],
 )
 
-service = ProfileService()
-
 @router.get("")
-async def get_profile():
-    
-    response_data = await service.get_profile()
-
-    return {
-        "statusCode": 200, 
-        "statusMessage": "Get profile successfully.", 
-        "data": response_data
-    }
+async def get_all_profiles():
+    response = await ProfileService.get_all_profiles()
+    return response
 
 @router.get("/{profile_id}")
-async def get_profile_by_id():
-    
-    response_data = await service.get_profile_by_id()
-
-    return {
-        "statusCode": 200, 
-        "statusMessage": "Get profile by id successfully.", 
-        "data": response_data
-    }
+async def get_profile_by_id(profile_id: str):
+    response = await ProfileService.get_profile_by_id(profile_id)
+    return response
