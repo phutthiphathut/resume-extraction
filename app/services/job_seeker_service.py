@@ -158,6 +158,7 @@ class JobSeekerService:
                 status_code=status.HTTP_200_OK,
                 status_message="Get profile successful.",
                 data=GetProfileJobSeekerResponseData(
+                    id=str(result.id),
                     email=result.email,
                     first_name=result.first_name,
                     last_name=result.last_name,
