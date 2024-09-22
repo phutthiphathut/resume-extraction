@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, UploadFile
+from fastapi import APIRouter, Depends
 
 from services.job_seeker_service import JobSeekerService
 from models.requests import RegisterJobSeekerRequest, LoginJobSeekerRequest, UploadJobSeekerResumeRequest
@@ -27,12 +27,7 @@ async def upload_job_seeker_resume(jobseeker_id: str, request: UploadJobSeekerRe
     return response
 
 
-@router.get("/{jobseeker_id}/profiles")
-async def get_profile():
-    response_data = await JobSeekerService.get_profile()
-
-    return {
-        "statusCode": 200,
-        "statusMessage": "Get profile successfully.",
-        "data": response_data
-    }
+@router.get("/{jobseeker_id}/profile")
+async def get_profile_job_seeker(jobseeker_id: str):
+    response = await JobSeekerService.get_profile(jobseeker_id)
+    return response

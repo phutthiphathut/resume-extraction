@@ -11,7 +11,7 @@ from enums.role import Role
 from repositories.job_seeker_repository import JobSeekerRepository
 from models.collections import JobSeeker
 from models.requests import LoginJobSeekerRequest, RegisterJobSeekerRequest, UploadJobSeekerResumeRequest
-from models.responses import BaseResponse, FailResponse, LoginJobSeekerResponseData, SuccessResponse, UploadJobSeekerResumeResponseData
+from models.responses import BaseResponse, FailResponse, GetProfileJobSeekerResponseData, LoginJobSeekerResponseData, SuccessResponse
 from utils.password_util import PasswordUtil
 from utils.jwt_util import JwtUtil
 
@@ -72,7 +72,7 @@ class JobSeekerService:
             payload = {
                 "sub": str(existing_job_seeker.id),
                 "email": existing_job_seeker.email,
-                "role": Role.JOB_SEEKER.value 
+                "role": Role.JOB_SEEKER.value
             }
 
             token = JwtUtil.create(payload)
@@ -96,7 +96,8 @@ class JobSeekerService:
         try:
             temp_file_path = await JobSeekerService._save_temp_file(request.resume_file)
 
-            extracted_data = JobSeekerService._extract_data_from_resume(temp_file_path)
+            extracted_data = JobSeekerService._extract_data_from_resume(
+                temp_file_path)
 
             await JobSeekerService._cleanup_temp_file(temp_file_path)
 
@@ -109,14 +110,12 @@ class JobSeekerService:
                     status_message="Invalid job seeker id."
                 )
 
-            log.info(f"Update profile job seeker ID : {result.id}, {result.profile}")
+            log.info(
+                f"Update profile job seeker ID : {result.id}, {result.profile}")
 
-            return SuccessResponse[UploadJobSeekerResumeResponseData](
+            return SuccessResponse(
                 status_code=status.HTTP_200_OK,
-                status_message="Resume uploaded successfully.",
-                data=UploadJobSeekerResumeResponseData(
-                    profile=profile
-                )
+                status_message="Resume uploaded successfully."
             )
         except Exception as e:
             log.error(f"Error: {str(e)}")
@@ -142,8 +141,36 @@ class JobSeekerService:
         return data
 
     @staticmethod
-    async def get_profile() -> dict:
-        return "get profile"
+    async def get_profile(jobseeker_id: str) -> BaseResponse:
+        try:
+            result = await JobSeekerRepository.get_by_id(ObjectId(jobseeker_id))
+
+            if result is None:
+                return FailResponse(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    status_message="Invalid job seeker id."
+                )
+
+            log.info(
+                f"Get profile job seeker ID : {result.id}")
+
+            return SuccessResponse[GetProfileJobSeekerResponseData](
+                status_code=status.HTTP_200_OK,
+                status_message="Get profile successful.",
+                data=GetProfileJobSeekerResponseData(
+                    email=result.email,
+                    first_name=result.first_name,
+                    last_name=result.last_name,
+                    mobile_number=result.mobile_number,
+                    profile=result.profile
+                )
+            )
+        except Exception as e:
+            log.error(f"Error: {str(e)}")
+            return FailResponse(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                status_message="An internal server error occurred."
+            )
 
     @staticmethod
     async def _save_temp_file(file: UploadFile) -> str:

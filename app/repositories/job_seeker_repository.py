@@ -14,7 +14,16 @@ class JobSeekerRepository:
     @staticmethod
     async def get_by_email(email: str) -> Optional[JobSeeker]:
         result = await collection.find_one({"email": email})
-        
+
+        if result:
+            return JobSeeker(**result)
+
+        return None
+
+    @staticmethod
+    async def get_by_id(id: ObjectId) -> Optional[JobSeeker]:
+        result = await collection.find_one({"_id": id})
+
         if result:
             return JobSeeker(**result)
 

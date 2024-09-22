@@ -1,5 +1,5 @@
-from typing import Any, Generic, List, Optional, TypeVar
-from pydantic import BaseModel
+from typing import Any, Generic, Optional, TypeVar
+from pydantic import BaseModel, EmailStr
 
 from models.profile import Profile
 
@@ -19,12 +19,16 @@ class FailResponse(BaseResponse):
     pass
 
 
+class GetProfileJobSeekerResponseData(BaseModel):
+    email: EmailStr
+    first_name: str
+    last_name: str
+    mobile_number: str
+    profile: Optional[Profile] = None
+
+
 class LoginJobSeekerResponseData(BaseModel):
     access_token: str
-
-
-class UploadJobSeekerResumeResponseData(BaseModel):
-    profile: Profile
 
 
 class LoginRecruiterResponseData(BaseModel):
