@@ -20,6 +20,7 @@ class FailResponse(BaseResponse):
 
 
 class GetProfileJobSeekerResponseData(BaseModel):
+    id: str
     email: EmailStr
     first_name: str
     last_name: str
