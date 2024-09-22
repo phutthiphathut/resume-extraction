@@ -1,4 +1,5 @@
-from fastapi import APIRouter
+from typing import Optional
+from fastapi import APIRouter, Query
 from services.profile_service import ProfileService
 
 router = APIRouter(
@@ -7,8 +8,8 @@ router = APIRouter(
 )
 
 @router.get("")
-async def get_all_profiles():
-    response = await ProfileService.get_all_profiles()
+async def get_all_profiles(skill: Optional[str] = Query(None)):
+    response = await ProfileService.get_all_profiles(skill=skill)
     return response
 
 @router.get("/{profile_id}")

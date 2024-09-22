@@ -1,19 +1,48 @@
 import logging
+from typing import List, Optional
 from bson import ObjectId
 from fastapi import status
 
 
 from repositories.job_seeker_repository import JobSeekerRepository
-from models.responses import BaseResponse, FailResponse, GetProfileJobSeekerResponseData,SuccessResponse
+from models.responses import BaseResponse, FailResponse, GetProfileJobSeekerResponseData, SuccessResponse
 
 log = logging.getLogger(__name__)
 
 
 class ProfileService:
     @staticmethod
-    async def get_all_profiles() -> BaseResponse:
-        return "get profile"
-    
+    async def get_all_profiles(skill: Optional[str] = None) -> BaseResponse:
+        try:
+            profiles = await JobSeekerRepository.get_all(skill=skill)
+
+            response_data = []
+
+            for profile in profiles:
+                response_data.append(
+                    GetProfileJobSeekerResponseData(
+                        id=str(profile.id),
+                        email=profile.email,
+                        first_name=profile.first_name,
+                        last_name=profile.last_name,
+                        mobile_number=profile.mobile_number,
+                        profile=profile.profile
+                    )
+                )
+
+            return SuccessResponse[List[GetProfileJobSeekerResponseData]](
+                status_code=status.HTTP_200_OK,
+                status_message="Get all profiles successful.",
+                data=response_data
+            )
+
+        except Exception as e:
+            log.error(f"Error: {str(e)}")
+            return FailResponse(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                status_message="An internal server error occurred."
+            )
+
     @staticmethod
     async def get_profile_by_id(profile_id: str) -> BaseResponse:
         try:
