@@ -1,3 +1,4 @@
+import re
 from typing import Optional, List
 from bson import ObjectId
 from pymongo.collection import Collection
@@ -15,8 +16,12 @@ class JobSeekerRepository:
     async def get_all(skill: Optional[str] = None) -> List[JobSeeker]:
         query = {}
         if skill:
-            query = {"profile.skills": skill}
-       
+            query = {
+                "profile.skills": {
+                    "$regex": re.escape(skill), "$options": "i"
+                }
+            }
+
         results = await collection.find(query).to_list(None)
 
         if results:
