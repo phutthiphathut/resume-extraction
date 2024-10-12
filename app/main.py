@@ -24,3 +24,7 @@ app.include_router(recruiter_router.router)
 
 app.add_exception_handler(ValueError, value_error_handler)
 app.add_exception_handler(RequestValidationError, validation_exception_handler)
+
+@app.get("/")
+async def health_check():
+    return "Hello"
