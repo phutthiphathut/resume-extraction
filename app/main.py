@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
+import sys
 
 from exceptions.exception_handler import validation_exception_handler, value_error_handler
 from configs.app_config import appConfig
@@ -27,4 +28,5 @@ app.add_exception_handler(RequestValidationError, validation_exception_handler)
 
 @app.get("/")
 async def health_check():
-    return "Hello"
+    python_version = f"{sys.version_info[0]}.{sys.version_info[1]}.{sys.version_info[2]}"
+    return f"Current python version: {python_version}"
