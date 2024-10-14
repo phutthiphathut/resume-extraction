@@ -13,13 +13,13 @@ collection: Collection = database[COLLECTION_NAME]
 
 class JobSeekerRepository:
     @staticmethod
-    async def get_all(skill: Optional[str] = None) -> List[JobSeeker]:
+    async def get_all(skills: Optional[List[str]] = None) -> List[JobSeeker]:
         query = {}
-        if skill:
+        if skills:
             query = {
-                "profile.skills": {
-                    "$regex": re.escape(skill), "$options": "i"
-                }
+                "$and": [
+                    {"profile.skills": {"$regex": re.escape(skill), "$options": "i"}} for skill in skills
+                ]
             }
 
         results = await collection.find(query).to_list(None)

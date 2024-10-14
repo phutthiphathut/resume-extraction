@@ -14,7 +14,8 @@ class ProfileService:
     @staticmethod
     async def get_all_profiles(skill: Optional[str] = None) -> BaseResponse:
         try:
-            profiles = await JobSeekerRepository.get_all(skill=skill)
+            skills = [s.strip() for s in skill.split(",")]
+            profiles = await JobSeekerRepository.get_all(skills=skills)
 
             response_data = []
 
