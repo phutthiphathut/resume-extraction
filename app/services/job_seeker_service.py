@@ -14,6 +14,7 @@ from models.requests import LoginJobSeekerRequest, RegisterJobSeekerRequest, Upl
 from models.responses import BaseResponse, FailResponse, GetProfileJobSeekerResponseData, LoginJobSeekerResponseData, SuccessResponse
 from utils.password_util import PasswordUtil
 from utils.jwt_util import JwtUtil
+from utils.storage_util import StorageUtil
 
 log = logging.getLogger(__name__)
 
@@ -99,10 +100,13 @@ class JobSeekerService:
             extracted_data = JobSeekerService._extract_data_from_resume(
                 temp_file_path)
 
+            resume_url = JobSeekerService._upload_file_to_storage(
+                temp_file_path, jobseeker_id)
+
             await JobSeekerService._cleanup_temp_file(temp_file_path)
 
             profile = Profile.model_validate(extracted_data)
-            result = await JobSeekerRepository.update_profile(ObjectId(jobseeker_id), profile)
+            result = await JobSeekerRepository.update_profile(ObjectId(jobseeker_id), profile, resume_url)
 
             if result is None:
                 return FailResponse(
@@ -123,22 +127,6 @@ class JobSeekerService:
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 status_message="An internal server error occurred."
             )
-
-    @staticmethod
-    async def update_resume(file: UploadFile) -> dict:
-        # Save the uploaded file to a temporary location
-        with tempfile.NamedTemporaryFile(delete=False, suffix=".pdf") as temp_file:
-            temp_file.write(file.file.read())
-            temp_file_path = temp_file.name
-        print(temp_file_path)
-
-        # Extract data from the resume
-        data = ResumeParser(temp_file_path).get_extracted_data()
-
-        # Clean up the temporary file
-        os.remove(temp_file_path)
-
-        return data
 
     @staticmethod
     async def get_profile(jobseeker_id: str) -> BaseResponse:
@@ -163,6 +151,7 @@ class JobSeekerService:
                     first_name=result.first_name,
                     last_name=result.last_name,
                     mobile_number=result.mobile_number,
+                    resume_url=result.resume_url,
                     profile=result.profile
                 )
             )
@@ -199,3 +188,18 @@ class JobSeekerService:
         except Exception as e:
             log.error(f"Error removing temporary file: {str(e)}")
             raise Exception("Error removing temporary file")
+
+    @staticmethod
+    def _upload_file_to_storage(file_path: str, file_name: str) -> str:
+        try:
+            storage = StorageUtil()
+            object_name = f"resumes/{file_name}.pdf"
+
+            storage.upload_file(file_path, object_name)
+
+            file_url = storage.get_cdn_file_url(object_name)
+
+            return file_url
+        except Exception as e:
+            log.error(f"Error uploading file to storage: {str(e)}")
+            raise Exception("Error uploading file to storage")

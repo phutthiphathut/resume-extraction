@@ -9,6 +9,11 @@ class AppConfig(BaseSettings):
     JWT_SECRET_KEY: str
     JWT_EXPIRE_MINUTES: int
 
+    STORAGE_SPACE_NAME: str
+    STORAGE_REGION: str 
+    STORAGE_ACCESS_ID: str
+    STORAGE_SECRET_KEY: str
+
     model_config = SettingsConfigDict(env_file='.env')
 
 appConfig = AppConfig()

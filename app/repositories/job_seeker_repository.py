@@ -55,10 +55,15 @@ class JobSeekerRepository:
         return job_seeker
 
     @staticmethod
-    async def update_profile(id: ObjectId, profile: Profile) -> Optional[JobSeeker]:
+    async def update_profile(id: ObjectId, profile: Profile, resume_url: str) -> Optional[JobSeeker]:
         result = await collection.find_one_and_update(
             {"_id": id},
-            {"$set": {"profile": profile.model_dump(by_alias=True)}},
+            {
+                "$set": {
+                    "resume_url": resume_url,
+                    "profile": profile.model_dump(by_alias=True)
+                }
+            },
             return_document=True
         )
 

@@ -27,6 +27,7 @@ class ProfileService:
                         first_name=profile.first_name,
                         last_name=profile.last_name,
                         mobile_number=profile.mobile_number,
+                        resume_url=profile.resume_url,
                         profile=profile.profile
                     )
                 )
@@ -67,6 +68,7 @@ class ProfileService:
                     first_name=result.first_name,
                     last_name=result.last_name,
                     mobile_number=result.mobile_number,
+                    resume_url=result.resume_url,
                     profile=result.profile
                 )
             )
