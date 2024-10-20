@@ -24,7 +24,7 @@ class GetProfileJobSeekerResponseData(BaseModel):
     first_name: str
     last_name: str
     mobile_number: str
-    resume_url: str
+    resume_url: Optional[str] = None
     profile: Optional[Profile] = None
 
 class LoginJobSeekerResponseData(BaseModel):
