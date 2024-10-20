@@ -10,7 +10,7 @@ from models.profile import Profile
 from enums.role import Role
 from repositories.job_seeker_repository import JobSeekerRepository
 from models.collections import JobSeeker
-from models.requests import LoginJobSeekerRequest, RegisterJobSeekerRequest, UploadJobSeekerResumeRequest
+from models.requests import LoginJobSeekerRequest, RegisterJobSeekerRequest, UpdateJobSeekerRequest, UploadJobSeekerResumeRequest
 from models.responses import BaseResponse, FailResponse, GetProfileJobSeekerResponseData, LoginJobSeekerResponseData, SuccessResponse
 from utils.password_util import PasswordUtil
 from utils.jwt_util import JwtUtil
@@ -154,6 +154,42 @@ class JobSeekerService:
                     resume_url=result.resume_url,
                     profile=result.profile
                 )
+            )
+        except Exception as e:
+            log.error(f"Error: {str(e)}")
+            return FailResponse(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                status_message="An internal server error occurred."
+            )
+
+    @staticmethod
+    async def update_profile(jobseeker_id: str, request: UpdateJobSeekerRequest) -> BaseResponse:
+        try:
+            job_seeker = await JobSeekerRepository.get_by_id(ObjectId(jobseeker_id))
+        
+            if job_seeker is None:
+                return FailResponse(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    status_message="Invalid job seeker id."
+                )
+
+            job_seeker.email = request.email
+            job_seeker.first_name = request.first_name
+            job_seeker.last_name = request.last_name
+            job_seeker.mobile_number = request.mobile_number
+            job_seeker.profile.skills = request.skills
+            job_seeker.profile.college_name = request.college_name
+            job_seeker.profile.degree = request.degree
+            job_seeker.profile.designation = request.designation
+
+            result = await JobSeekerRepository.update(job_seeker)
+
+            log.info(
+                f"Update job seeker ID : {job_seeker.id}")
+
+            return SuccessResponse(
+                status_code=status.HTTP_200_OK,
+                status_message="Job seeker profile updated successfully."
             )
         except Exception as e:
             log.error(f"Error: {str(e)}")

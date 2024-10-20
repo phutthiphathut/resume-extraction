@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends
 
 from services.job_seeker_service import JobSeekerService
-from models.requests import RegisterJobSeekerRequest, LoginJobSeekerRequest, UploadJobSeekerResumeRequest
+from models.requests import RegisterJobSeekerRequest, LoginJobSeekerRequest, UploadJobSeekerResumeRequest, UpdateJobSeekerRequest
 
 router = APIRouter(
     prefix="/jobseekers",
@@ -30,4 +30,10 @@ async def upload_job_seeker_resume(jobseeker_id: str, request: UploadJobSeekerRe
 @router.get("/{jobseeker_id}/profile")
 async def get_profile_job_seeker(jobseeker_id: str):
     response = await JobSeekerService.get_profile(jobseeker_id)
+    return response
+
+
+@router.patch("/{jobseeker_id}/profile")
+async def update_profile_job_seeker(jobseeker_id: str, request: UpdateJobSeekerRequest):
+    response = await JobSeekerService.update_profile(jobseeker_id, request)
     return response

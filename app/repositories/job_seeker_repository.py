@@ -55,6 +55,18 @@ class JobSeekerRepository:
         return job_seeker
 
     @staticmethod
+    async def update(job_seeker: JobSeeker) -> JobSeeker:
+        result = await collection.update_one(
+            {"_id": job_seeker.id},
+            {"$set": job_seeker.model_dump(by_alias=True)}
+        )
+
+        if result.modified_count == 1:
+            return job_seeker
+
+        return None
+
+    @staticmethod
     async def update_profile(id: ObjectId, profile: Profile, resume_url: str) -> Optional[JobSeeker]:
         result = await collection.find_one_and_update(
             {"_id": id},
