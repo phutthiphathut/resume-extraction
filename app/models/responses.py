@@ -33,3 +33,7 @@ class LoginJobSeekerResponseData(BaseModel):
 
 class LoginRecruiterResponseData(BaseModel):
     access_token: str
+
+class GetSkillResponseData(BaseModel):
+    id: str
+    skill_name: str

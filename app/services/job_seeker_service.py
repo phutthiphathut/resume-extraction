@@ -182,7 +182,7 @@ class JobSeekerService:
             job_seeker.profile.degree = request.degree
             job_seeker.profile.designation = request.designation
 
-            result = await JobSeekerRepository.update(job_seeker)
+            await JobSeekerRepository.update(job_seeker)
 
             log.info(
                 f"Update job seeker ID : {job_seeker.id}")

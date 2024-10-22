@@ -43,3 +43,6 @@ class JobSeeker(MongoBaseModel):
 class Recruiter(MongoBaseModel):
     email: EmailStr
     password: str
+
+class Skill(MongoBaseModel):
+    skill_name: str

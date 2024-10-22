@@ -122,3 +122,21 @@ class UpdateJobSeekerRequest(BaseModel):
         if not value.isdigit():
             raise ValueError('Mobile number must contain only digits')
         return value
+
+class CreateSkillRequest(BaseModel):
+    skill_name: str
+
+    @field_validator('skill_name')
+    def validate_skill_name(cls, value: str) -> str:
+        if len(value) < 1:
+            raise ValueError('Skill name must be at least 1 characters long')
+        return value
+    
+class UpdateSkillRequest(BaseModel):
+    skill_name: str
+
+    @field_validator('skill_name')
+    def validate_skill_name(cls, value: str) -> str:
+        if len(value) < 1:
+            raise ValueError('Skill name must be at least 1 characters long')
+        return value
