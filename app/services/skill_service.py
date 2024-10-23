@@ -29,9 +29,13 @@ class SkillService:
             result = await SkillRepository.create(skill)
             log.info(f"Insert skill ID : {result.id}")
 
-            return SuccessResponse(
+            return SuccessResponse[GetSkillResponseData](
                 status_code=status.HTTP_201_CREATED,
-                status_message="Skill created successfully."
+                status_message="Skill created successfully.",
+                data=GetSkillResponseData(
+                    id=str(result.id),
+                    skill_name=result.skill_name
+                )
             )
         except Exception as e:
             log.error(f"Error: {str(e)}")
@@ -78,15 +82,35 @@ class SkillService:
                     status_message="Invalid skill id."
                 )
 
+            existing_skill = await SkillRepository.get_by_skill_name(request.skill_name)
+            if existing_skill and existing_skill.id != skill.id:
+                return FailResponse(
+                    status_code=status.HTTP_400_BAD_REQUEST,
+                    status_message="Skill already exists."
+                )
+            elif existing_skill and existing_skill.id == skill.id and existing_skill.skill_name == request.skill_name:
+                return SuccessResponse[GetSkillResponseData](
+                    status_code=status.HTTP_200_OK,
+                    status_message="Skill updated successfully.",
+                    data=GetSkillResponseData(
+                        id=str(skill.id),
+                        skill_name=skill.skill_name
+                    )
+                )
+
             skill.skill_name = request.skill_name
 
-            await SkillRepository.update(skill)
+            result = await SkillRepository.update(skill)
 
             log.info(f"Updated skill ID: {skill.id}")
 
-            return SuccessResponse(
+            return SuccessResponse[GetSkillResponseData](
                 status_code=status.HTTP_200_OK,
-                status_message="Skill updated successfully."
+                status_message="Skill updated successfully.",
+                data=GetSkillResponseData(
+                    id=str(result.id),
+                    skill_name=result.skill_name
+                )
             )
         except Exception as e:
             log.error(f"Error: {str(e)}")
