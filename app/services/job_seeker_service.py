@@ -9,7 +9,8 @@ from pyresparser import ResumeParser
 from models.profile import Profile
 from enums.role import Role
 from repositories.job_seeker_repository import JobSeekerRepository
-from models.collections import JobSeeker
+from repositories.skill_repository import SkillRepository
+from models.collections import JobSeeker, Skill
 from models.requests import LoginJobSeekerRequest, RegisterJobSeekerRequest, UpdateJobSeekerRequest, UploadJobSeekerResumeRequest
 from models.responses import BaseResponse, FailResponse, GetProfileJobSeekerResponseData, LoginJobSeekerResponseData, SuccessResponse
 from utils.password_util import PasswordUtil
@@ -116,6 +117,12 @@ class JobSeekerService:
 
             log.info(
                 f"Update profile job seeker ID : {result.id}, {result.profile}")
+            
+            for skill_name in profile.skills:
+                skill = await SkillRepository.get_by_skill_name(skill_name)
+                if skill is None:
+                    new_skill = Skill(skill_name=skill_name)
+                    await SkillRepository.create(new_skill)
 
             return SuccessResponse(
                 status_code=status.HTTP_200_OK,
