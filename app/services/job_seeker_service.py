@@ -106,6 +106,8 @@ class JobSeekerService:
 
             await JobSeekerService._cleanup_temp_file(temp_file_path)
 
+            extracted_data["degree"] = ', '.join(extracted_data["degree"])
+
             profile = Profile.model_validate(extracted_data)
             result = await JobSeekerRepository.update_profile(ObjectId(jobseeker_id), profile, resume_url)
 

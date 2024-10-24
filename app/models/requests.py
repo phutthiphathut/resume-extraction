@@ -93,7 +93,7 @@ class UpdateJobSeekerRequest(BaseModel):
     mobile_number: str
     skills: Optional[List[str]] = None
     college_name: Optional[str] = None
-    degree: Optional[List[str]] = None
+    degree: Optional[str] = None
     designation: Optional[List[str]] = None
 
     @field_validator('first_name')

@@ -8,7 +8,7 @@ class Profile(BaseModel):
     mobile_number: Optional[str] = None
     skills: Optional[List[str]] = None
     college_name: Optional[str] = None
-    degree: Optional[List[str]] = None
+    degree: Optional[str] = None
     designation: Optional[List[str]] = None
     experience: Optional[List[str]] = None
     company_names: Optional[List[str]] = None
